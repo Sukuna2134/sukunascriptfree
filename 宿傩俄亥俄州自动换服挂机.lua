@@ -20,8 +20,6 @@ end
 local targetItems = {
     "Money Printer",
     "Blue Candy Cane",
-    "Gold AK-47",
-    "Gold Deagle",
     "Bunny Balloon",
     "Ghost Balloon",
     "Clover Balloon",
