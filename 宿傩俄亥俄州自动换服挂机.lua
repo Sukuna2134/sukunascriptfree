@@ -73,19 +73,33 @@ local function AutoPickItem()
                 if item:IsA("MeshPart") or item:IsA("Part") then
                     local itemPos = item.Position
                     local distance = (itemPos - forbiddenZoneCenter).Magnitude
-
+        
                     if distance > forbiddenRadius then
                         for _, child in pairs(item:GetChildren()) do
                             if child:IsA("ProximityPrompt") then
                                 for _, targetName in pairs(targetItems) do
                                     if child.ObjectText == targetName then
                                         foundItem = true
-                                        humanoid:Move(Vector3.new(1, 0, 0))
-                                        HumanoidRootPart.CFrame = item.CFrame * CFrame.new(0, 2, 0)
                                         child.RequiresLineOfSight = false
                                         child.HoldDuration = 0
+                                        humanoid:Move(Vector3.new(1, 0, 0))
+                                        HumanoidRootPart.CFrame = item.CFrame * CFrame.new(0, 2, 0)
                                         fireproximityprompt(child)
-                                        task.wait(0.3)
+                                        
+                                        local startTime = tick()
+                                        local timeout = 5
+                                        local connection
+                                        connection = game:GetService("RunService").Heartbeat:Connect(function()
+                                            if not item or not item.Parent then
+                                                connection:Disconnect()
+                                                return
+                                            end
+                                            
+                                            if tick() - startTime >= timeout then
+                                                item:Destroy()
+                                                connection:Disconnect()
+                                            end
+                                        end)
                                     end
                                 end
                             end
